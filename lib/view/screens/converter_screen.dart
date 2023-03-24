@@ -15,14 +15,12 @@ class _TemperatureConverterScreenState
   TextEditingController controller = TextEditingController();
   List<String> converterType = ['Celsius', 'Fahrenheit', 'kelvin'];
   String? selectedValue = 'Celsius';
-  int controllerValue= 0;
+  int controllerValue = 0;
   int? selectedTab = 0;
   double targetTemp = 0.0;
 
   @override
   Widget build(BuildContext context) {
-setState(() {
-});
     return Scaffold(
       appBar: AppBar(
         title: const Text('We Convert'),
@@ -74,8 +72,9 @@ setState(() {
                           // Down Arrow Icon
                           icon: const Icon(Icons.keyboard_arrow_down),
                           onChanged: (newValue) {
+                            controllerValue = int.parse(controller.text);
                             setState(() {
-                              targetTemp=(controllerValue * 9/5) + 32;
+                              targetTemp = (controllerValue * 9 / 5) + 32;
                               selectedValue = newValue!;
                             });
                           },
