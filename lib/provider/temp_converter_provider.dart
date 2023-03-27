@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 
 class TempConverterProvider extends ChangeNotifier {
-  String? _selectedValue = 'Celsius';
-  double _controllerValue = 0;
+  String _selectedValue = 'Celsius';
   int _selectedTab = 0;
   double _targetTemp = 0.0;
   String _finalResult = '0';
+  double _controllerValue = 0;
 
-  set controllerValue(double value) {
-    _controllerValue = value;
-  }
+  String get selectedValue => _selectedValue;
 
   double get controllerValue => _controllerValue;
 
@@ -17,9 +15,15 @@ class TempConverterProvider extends ChangeNotifier {
 
   String get finalResult => _finalResult;
 
-  String? get selectedValue => _selectedValue;
-
   double get targetTemp => _targetTemp;
+
+  set selectedValue(String value) {
+    _selectedValue = value;
+  }
+
+  set controllerValue(double value) {
+    _controllerValue = value;
+  }
 
   void selectCurrentMetric(String newValue) {
     switch (newValue) {
@@ -27,6 +31,7 @@ class TempConverterProvider extends ChangeNotifier {
         {
           _targetTemp = controllerValue;
           _selectedValue = newValue!;
+
         }
         break;
 
@@ -34,12 +39,15 @@ class TempConverterProvider extends ChangeNotifier {
         {
           _targetTemp = (controllerValue - 32) * 5 / 9;
           _selectedValue = newValue!;
+
+
         }
         break;
       case 'kelvin':
         {
           _targetTemp = controllerValue - 273.15;
           _selectedValue = newValue!;
+
         }
         break;
 
@@ -50,6 +58,7 @@ class TempConverterProvider extends ChangeNotifier {
         }
         break;
     }
+    notifyListeners();
   }
 
   void selectTargetMetric(int value) {
@@ -81,5 +90,6 @@ class TempConverterProvider extends ChangeNotifier {
         }
         break;
     }
+    notifyListeners();
   }
 }
