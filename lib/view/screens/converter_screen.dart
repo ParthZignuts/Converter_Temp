@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_chart/provider/temp_converter_provider.dart';
+import 'package:provider/provider.dart';
 
 class TemperatureConverterScreen extends StatefulWidget {
   const TemperatureConverterScreen({Key? key}) : super(key: key);
@@ -14,13 +16,16 @@ class _TemperatureConverterScreenState
     extends State<TemperatureConverterScreen> {
   TextEditingController controller = TextEditingController();
   List<String> converterType = ['Celsius', 'Fahrenheit', 'kelvin'];
+
   String? selectedValue = 'Celsius';
-  int controllerValue = 0;
+  double controllerValue = 0;
   int? selectedTab = 0;
   double targetTemp = 0.0;
+  String finalResult='0';
 
   @override
   Widget build(BuildContext context) {
+    final converterProvider=Provider.of<TempConverterProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('We Convert'),
@@ -63,6 +68,7 @@ class _TemperatureConverterScreenState
                         ),
                         DropdownButton(
                           value: selectedValue,
+
                           items: converterType.map((String items) {
                             return DropdownMenuItem<String>(
                               value: items,
@@ -72,10 +78,37 @@ class _TemperatureConverterScreenState
                           // Down Arrow Icon
                           icon: const Icon(Icons.keyboard_arrow_down),
                           onChanged: (newValue) {
-                            controllerValue = int.parse(controller.text);
+                            controllerValue = double.parse(controller.text);
+
                             setState(() {
-                              targetTemp = (controllerValue * 9 / 5) + 32;
-                              selectedValue = newValue!;
+                              switch (newValue) {
+                                case 'Celsius':
+                                  {
+                                    targetTemp = controllerValue ;
+                                    selectedValue = newValue!;
+                                  }
+                                  break;
+
+                                case 'Fahrenheit':
+                                  {
+                                   targetTemp= (controllerValue - 32) * 5/9;
+                                   selectedValue = newValue!;
+                                  }
+                                  break;
+                                case 'kelvin':
+                                  {
+                                    targetTemp=controllerValue- 273.15;
+                                    selectedValue = newValue!;
+                                  }
+                                  break;
+
+                                default:
+                                  {
+                                    targetTemp = controllerValue;
+                                    selectedValue = newValue!;
+                                  }
+                                  break;
+                              }
                             });
                           },
                         ),
@@ -116,6 +149,34 @@ class _TemperatureConverterScreenState
                           onValueChanged: (value) {
                             setState(() {
                               selectedTab = value;
+                              switch (value) {
+                                case 0:
+                                  {
+                                    finalResult = targetTemp.toStringAsFixed(3);
+                                    selectedTab=value;
+                                  }
+                                  break;
+
+                                case 1:
+                                  {
+                                    finalResult= ((9 / 5 * targetTemp) + 32).toStringAsFixed(3);
+                                    selectedTab=value;
+                                  }
+                                  break;
+                                case 2:
+                                  {
+                                    finalResult=(targetTemp + 273.15).toStringAsFixed(3);
+                                    selectedTab=value;
+                                  }
+                                  break;
+
+                                default:
+                                  {
+                                    finalResult = '0';
+                                    selectedTab=value;
+                                  }
+                                  break;
+                              }
                             });
                           },
                         ),
@@ -123,7 +184,7 @@ class _TemperatureConverterScreenState
                           height: 8,
                         ),
                         Text(
-                          '$targetTemp',
+                          finalResult,
                           style: const TextStyle(fontSize: 25),
                         ),
                       ],
